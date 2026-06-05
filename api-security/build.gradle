@@ -1,0 +1,23 @@
+dependencies {
+	implementation platform(libs.spring.boot.dependencies)
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// --- Added Dependencies ---
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'   // Monitoring & Health
+	implementation 'org.springframework.boot:spring-boot-starter-aop'        // Aspect Oriented Programming
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'   // Persistence layer
+
+	// Jackson JSR310 for Java 8 Date/Time support (LocalDateTime, etc.)
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	// ---------------------------
+
+	implementation 'org.apache.httpcomponents.client5:httpclient5'
+
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Annotation Processors
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor libs.lombok
+	compileOnly libs.lombok
+}

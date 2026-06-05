@@ -1,0 +1,2 @@
+com.bhagwat.scm.kafka.config.KafkaAutoConfiguration
+com.bhagwat.scm.kafka.dlt.DltPersistenceConfig

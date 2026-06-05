@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/api-core" />
+            <option value="$PROJECT_DIR$/api-db" />
+            <option value="$PROJECT_DIR$/api-exception" />
+            <option value="$PROJECT_DIR$/api-kafka" />
+            <option value="$PROJECT_DIR$/api-logging" />
+            <option value="$PROJECT_DIR$/api-observability" />
+            <option value="$PROJECT_DIR$/api-redis" />
+            <option value="$PROJECT_DIR$/api-rest" />
+            <option value="$PROJECT_DIR$/api-security" />
+            <option value="$PROJECT_DIR$/api-vault" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

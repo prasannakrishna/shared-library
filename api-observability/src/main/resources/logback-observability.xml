@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  logback-observability.xml  ─  SCM Shared Observability Library
+  ────────────────────────────────────────────────────────────────
+  Usage in application.properties:
+      logging.config=classpath:logback-observability.xml
+
+  Two appenders:
+    CONSOLE  — human-readable with traceId/spanId in the level column
+    LOKI     — structured JSON pushed to Loki; stream labels enable LogQL filtering
+
+  Properties read from Spring environment (all have defaults):
+    spring.application.name   → app label in Loki streams
+    spring.profiles.active    → env label (falls back to observability.environment)
+    observability.loki.url    → Loki base URL (default: http://localhost:3100)
+-->
+<configuration>
+
+    <!--
+      Suppress Logback's own internal "|-ERROR" status messages printed to stdout.
+      These appear when Loki4j fails to reach Loki (e.g., stack not started yet).
+      The application continues running normally — logs still go to CONSOLE.
+    -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <!-- ── Spring properties ──────────────────────────────────────────────── -->
+    <springProperty scope="context" name="appName"
+                    source="spring.application.name"    defaultValue="app"/>
+    <springProperty scope="context" name="lokiUrl"
+                    source="observability.loki.url"     defaultValue="http://localhost:3100"/>
+    <springProperty scope="context" name="environment"
+                    source="observability.environment"  defaultValue="local"/>
+
+    <!-- ── Console appender ───────────────────────────────────────────────── -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [${appName},%X{traceId:-},%X{spanId:-}] %c{1} : %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ── Loki appender ──────────────────────────────────────────────────── -->
+    <!--
+      Labels (stream selectors): keep low-cardinality — app, env, level, host.
+      All queryable fields (traceId, logger, thread, message) go into the JSON body.
+    -->
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>${lokiUrl}/loki/api/v1/push</url>
+            <connectionTimeoutMs>5000</connectionTimeoutMs>
+            <requestTimeoutMs>10000</requestTimeoutMs>
+        </http>
+
+        <format>
+            <label>
+                <pattern>app=${appName},env=${environment},level=%level,host=${HOSTNAME:-localhost}</pattern>
+                <sortByKey>true</sortByKey>
+            </label>
+            <message>
+                <pattern>{"level":"%level","logger":"%logger{36}","thread":"%thread","traceId":"%X{traceId:-}","spanId":"%X{spanId:-}","message":"%message","exception":"%ex{short}"}</pattern>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+
+        <!-- Flush every 1 s or 1 000 entries — whichever comes first -->
+        <batchMaxItems>1000</batchMaxItems>
+        <batchTimeoutMs>1000</batchTimeoutMs>
+        <!-- Drop 50 % of backlogged batches rather than blocking application threads -->
+        <dropRatioOnBackpressure>0.5</dropRatioOnBackpressure>
+    </appender>
+
+    <!-- ── Async wrapper — prevents Loki I/O from blocking app threads ────── -->
+    <appender name="LOKI_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOKI"/>
+        <queueSize>10000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <!-- ── Root logger ────────────────────────────────────────────────────── -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOKI_ASYNC"/>
+    </root>
+
+    <!-- Reduce noisy framework logs -->
+    <logger name="org.hibernate.SQL"                       level="WARN"/>
+    <logger name="org.springframework.web"                 level="INFO"/>
+    <logger name="org.springframework.kafka"               level="INFO"/>
+    <logger name="io.opentelemetry"                        level="WARN"/>
+    <logger name="com.github.loki4j"                       level="WARN"/>
+    <!-- Suppress "Failed to publish metrics to OTLP receiver" when collector is offline -->
+    <logger name="io.micrometer.registry.otlp"             level="ERROR"/>
+    <!-- Suppress repeated "Broker may not be available" spam when Kafka is offline -->
+    <logger name="org.apache.kafka.clients.NetworkClient"  level="ERROR"/>
+    <logger name="org.apache.kafka.clients.admin"          level="ERROR"/>
+    <logger name="org.apache.kafka"                        level="WARN"/>
+
+</configuration>

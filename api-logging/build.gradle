@@ -1,0 +1,51 @@
+/*plugins {
+	id 'java-library'
+	id 'io.spring.dependency-management'
+}*/
+
+/*java {
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}*/
+
+dependencies {
+	// Use Spring Boot BOM to manage versions
+	implementation platform(libs.spring.boot.dependencies)
+
+
+	// Spring Boot basics
+	//implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Micrometer + Sleuth + Zipkin for tracing
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+	implementation 'io.zipkin.reporter2:zipkin-sender-okhttp3'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation platform(libs.jakarta.servlet.api)
+	implementation platform(libs.logback.classic)
+
+	// Logging
+	implementation 'org.slf4j:slf4j-api'
+
+	// Optional DB and Lombok
+	runtimeOnly 'com.h2database:h2'
+	compileOnly libs.lombok
+	annotationProcessor libs.lombok
+	implementation 'com.auth0:java-jwt:3.19.0'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+/*dependencyManagement {
+	imports {
+		// Brings in Spring Cloud BOM for Sleuth and Zipkin
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.8"
+	}
+}
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}*/

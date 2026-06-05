@@ -1,0 +1,12 @@
+rootProject.name = 'shared-library'
+
+include 'api-rest'
+include 'api-exception'
+include 'api-logging'
+include 'api-security'
+include 'api-core'
+include 'api-vault'
+include 'api-redis'
+include 'api-db'
+include 'api-kafka'
+include 'api-observability'

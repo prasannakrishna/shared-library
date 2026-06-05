@@ -1,0 +1,28 @@
+dependencies {
+    // Bring in actuator (health, metrics endpoints)
+    api 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Micrometer → OpenTelemetry SDK bridge (traces)
+    api 'io.micrometer:micrometer-tracing-bridge-otel'
+
+    // OTLP exporter — sends traces + metrics to OTel Collector
+    api 'io.opentelemetry:opentelemetry-exporter-otlp'
+
+    // OTLP Micrometer registry — pushes metrics via OTLP
+    api 'io.micrometer:micrometer-registry-otlp'
+
+    // Prometheus Micrometer registry — exposes /actuator/prometheus scrape endpoint
+    // (acts as a fallback when the OTLP push pipeline is down)
+    api 'io.micrometer:micrometer-registry-prometheus'
+
+    // Loki4j logback appender — sends structured JSON logs directly to Loki
+    api 'com.github.loki4j:loki-logback-appender:1.5.2'
+
+    // Servlet API + Spring Web — needed to compile ObservabilityRequestLoggingFilter.
+    // Declared compileOnly so consumers (who already have spring-boot-starter-web)
+    // are not forced to take a duplicate dependency.
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+
+    // Generates spring-configuration-metadata.json for IDE auto-complete
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}

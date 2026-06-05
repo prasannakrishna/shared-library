@@ -1,0 +1,76 @@
+buildscript {
+    ext {
+        springBootVersion = '3.2.5'
+        springDependencyManagementVersion = '1.1.4'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+    }
+}
+
+allprojects {
+    group = 'com.bhagwat.scm'
+    version = '1.0.0-SNAPSHOT'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    // ADD THIS: Import Spring Boot BOM for dependency management
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        }
+    }
+
+    // ADD THIS: Common dependencies for all subprojects
+    dependencies {
+        // Lombok for all modules
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        // Testing
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                groupId = project.group
+                artifactId = project.name
+                version = project.version
+            }
+        }
+        repositories {
+            mavenLocal()
+        }
+    }
+}

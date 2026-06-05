@@ -1,0 +1,25 @@
+[versions]
+spring-boot = '3.2.5'
+springdoc-openapi-starter-webmvc-ui = "2.8.4"
+jakarta-servlet-api = "6.0.0"
+logback-classic = "1.5.16"
+spring-vault = "3.1.3"
+html-sanitizer = "20240325.1"
+hibernate-validator = "8.0.1.Final"
+logcaptor = "2.3.2"
+lombok = "1.18.30"
+# Placeholder versions required by the original [libraries] section
+
+
+[libraries]
+# Dependencies from the [versions] list
+spring-boot-dependencies = {group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "spring-boot" }
+spring-openapi-starter-webmvc-ui = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-openapi-starter-webmvc-ui" }
+spring-vault = { group = "org.springframework.vault", name = "spring-vault-starter", version.ref = "spring-vault" }
+jakarta-servlet-api = { group = "jakarta.servlet", name = "jakarta.servlet-api", version.ref = "jakarta-servlet-api" }
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback-classic" }
+owasp-sanitizer = { group = "com.googlecode.owasp-java-html-sanitizer", name = "owasp-java-html-sanitizer", version.ref = "html-sanitizer" }
+logcaptor = { group = "io.github.hakkyok", name = "logcaptor", version.ref = "logcaptor" }
+lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+
+validator-api = { group = "org.hibernate.validator", name = "hibernate-validator", version.ref = "hibernate-validator" }

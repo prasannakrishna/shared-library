@@ -1,0 +1,14 @@
+dependencies {
+
+    implementation platform(libs.spring.boot.dependencies)
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springframework.vault:spring-vault-core:3.1.3'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    annotationProcessor libs.lombok
+    compileOnly libs.lombok
+}

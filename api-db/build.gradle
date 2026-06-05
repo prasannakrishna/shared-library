@@ -1,0 +1,27 @@
+dependencies {
+
+    // Import Spring Boot BOM
+    api platform('org.springframework.boot:spring-boot-dependencies:3.4.2')
+
+    // Spring Boot
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    api 'org.springframework.boot:spring-boot-starter-aop'
+    api 'org.springframework.kafka:spring-kafka'
+
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    // PostgreSQL
+    compileOnly 'org.postgresql:postgresql'
+
+    // Flyway
+    compileOnly 'org.flywaydb:flyway-core'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Testing
+    testRuntimeOnly 'org.postgresql:postgresql'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0'
+}

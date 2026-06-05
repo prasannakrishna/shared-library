@@ -1,0 +1,103 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Commart SCM — Standard application.yml Template
+# Copy this and customize per service. All config in ONE place.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+server:
+  port: ${SERVICE_PORT:8080}
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 20
+    accept-count: 500
+
+spring:
+  application:
+    name: ${SERVICE_NAME:myService}
+  config:
+    import: optional:configserver:http://localhost:8888
+  main:
+    allow-bean-definition-overriding: true
+
+  # ─── PostgreSQL ───────────────────────────────────────────────────────────
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:mydb}
+    username: ${DB_USER:prasannakrishnabhagwat}
+    password: ${DB_PASS:admin123}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+      connection-timeout: 5000
+      idle-timeout: 300000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+
+  # ─── MongoDB (read projections) ──────────────────────────────────────────
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_HOST:localhost}:${MONGO_PORT:27017}/${DB_NAME:mydb}
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  # ─── Kafka ────────────────────────────────────────────────────────────────
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BROKERS:localhost:9092}
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      bootstrap-servers: ${KAFKA_BROKERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# ─── Multi-tenancy ──────────────────────────────────────────────────────────
+multitenancy:
+  enabled: true
+  fail-on-missing-tenant: false
+  default-tenant-id: public
+
+# ─── Inter-Service API Configs ──────────────────────────────────────────────
+# All downstream service calls defined here. Used by ServiceApiRegistry bean.
+# Pattern: service.core.api-configs.<logical-name>.{host, path, method}
+# Path variables use {varName} syntax — resolved via registry.getConfig("name", "value")
+service:
+  core:
+    rest-client:
+      response-time-out: 5000
+      connection-time-out: 3000
+      request-time-out: 5000
+    api-configs:
+      # Example: calling inventoryService
+      # inventory-skus:
+      #   host: http://localhost:8083
+      #   path: /api/v1/skus
+      #   method: GET
+      # inventory-sku-by-id:
+      #   host: http://localhost:8083
+      #   path: /api/v1/skus/{id}
+      #   method: GET
+      # notification-send:
+      #   host: http://localhost:8096
+      #   path: /api/v1/notifications/send
+      #   method: POST
+
+# ─── Logging ────────────────────────────────────────────────────────────────
+logging:
+  level:
+    root: INFO
+    com.bhagwat.scm: DEBUG
+    org.springframework.security: WARN
+    org.springframework.cloud.netflix.eureka: WARN

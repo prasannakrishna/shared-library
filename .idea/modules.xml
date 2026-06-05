@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/shared-library.iml" filepath="$PROJECT_DIR$/.idea/shared-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-db/shared-library.api-db.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-db/shared-library.api-db.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-exception/shared-library.api-exception.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-exception/shared-library.api-exception.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-kafka/shared-library.api-kafka.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-kafka/shared-library.api-kafka.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-logging/shared-library.api-logging.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-logging/shared-library.api-logging.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-observability/shared-library.api-observability.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-observability/shared-library.api-observability.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-redis/shared-library.api-redis.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-redis/shared-library.api-redis.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-rest/shared-library.api-rest.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-rest/shared-library.api-rest.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-security/shared-library.api-security.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-security/shared-library.api-security.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-vault/shared-library.api-vault.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-vault/shared-library.api-vault.main.iml" />
+    </modules>
+  </component>
+</project>
