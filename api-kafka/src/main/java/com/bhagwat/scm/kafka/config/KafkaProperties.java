@@ -46,6 +46,7 @@ public class KafkaProperties {
     private Dlt dlt = new Dlt();
     private Transaction transaction = new Transaction();
     private Security security = new Security();
+    private Provisioner provisioner = new Provisioner();
 
     @Data
     public static class Producer {
@@ -110,5 +111,15 @@ public class KafkaProperties {
         private String saslMechanism = "PLAIN";
         private String username;
         private String password;
+    }
+
+    @Data
+    public static class Provisioner {
+        /** Whether to auto-create/validate topics on startup. Disable for test profiles. */
+        private boolean enabled = true;
+        /** Replication factor override for production (3 for 3-broker clusters). */
+        private short replicationFactor = 1;
+        /** Min in-sync replicas for production (2 for 3-broker clusters). */
+        private short minInsyncReplicas = 1;
     }
 }

@@ -7,6 +7,7 @@ import com.bhagwat.scm.kafka.dlt.DltEventHandler;
 import com.bhagwat.scm.kafka.dlt.FailedEventLogRepository;
 import com.bhagwat.scm.kafka.producer.KafkaMessageProducer;
 import com.bhagwat.scm.kafka.producer.KafkaMessageProducerImpl;
+import com.bhagwat.scm.kafka.registry.TopicProvisioner;
 import com.bhagwat.scm.kafka.tenant.NoOpTenantContextProvider;
 import com.bhagwat.scm.kafka.tenant.TenantContextProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
@@ -130,5 +133,30 @@ public class KafkaAutoConfiguration {
     public KafkaTransactionManager<String, String> kafkaTransactionManager(
             KafkaProducerConfig kafkaProducerConfig) {
         return new KafkaTransactionManager<>(kafkaProducerConfig.producerFactory());
+    }
+
+    // ── Topic Provisioner ─────────────────────────────────────────────────────
+    // Creates/validates all registered topics on startup.
+    // Disabled by default in test profiles. Enable with:
+    //   api.kafka.provisioner.enabled=true
+
+    @Bean
+    @ConditionalOnMissingBean(TopicProvisioner.class)
+    @ConditionalOnProperty(prefix = "api.kafka.provisioner", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public TopicProvisioner topicProvisioner(KafkaProperties kafkaProperties) {
+        return new TopicProvisioner(kafkaProperties);
+    }
+
+    @EventListener(ContextRefreshedEvent.class)
+    @ConditionalOnProperty(prefix = "api.kafka.provisioner", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public void onApplicationReady() {
+        try {
+            TopicProvisioner provisioner = topicProvisioner(null);
+            if (provisioner != null) {
+                provisioner.provisionAll();
+            }
+        } catch (Exception e) {
+            // Log but don't fail startup — another instance might provision
+        }
     }
 }

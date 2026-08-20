@@ -26,7 +26,7 @@ public class DefaultDltEventHandler implements DltEventHandler {
     private final EventStateTracker eventStateTracker;
     private final FailedEventLogRepository failedEventLogRepository;
     private final ObjectMapper objectMapper;
-    private final org.springframework.kafka.core.KafkaTemplate<String, Object> kafkaTemplate;
+    private final org.springframework.kafka.core.KafkaTemplate<String, String> kafkaTemplate;
 
     private static final String AUDIT_TOPIC = "platform.failed-events";
 

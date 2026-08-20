@@ -26,7 +26,9 @@ public class KafkaConsumerConfig {
     private final DltEventHandler dltEventHandler;
 
     public ConsumerFactory<String, String> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+        Map<String, Object> configs = consumerConfigs();
+        configs.entrySet().removeIf(e -> e.getValue() == null);
+        return new DefaultKafkaConsumerFactory<>(configs);
     }
 
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
@@ -88,7 +90,9 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,  kafkaProperties.getBootstrapServers());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG,            c.getGroupId());
+        if (c.getGroupId() != null) {
+            props.put(ConsumerConfig.GROUP_ID_CONFIG, c.getGroupId());
+        }
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,   c.getAutoOffsetReset());
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,    c.getMaxPollRecords());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,  c.isEnableAutoCommit());
