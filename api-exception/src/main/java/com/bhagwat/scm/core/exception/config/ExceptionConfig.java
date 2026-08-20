@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @EnableConfigurationProperties(ExceptionProperties.class)
-@PropertySource("classpath:core-exceptions.properties")
+@PropertySource(value = "classpath:core-exceptions.properties", ignoreResourceNotFound = true)
 @Import({GlobalExceptionHandler.class, ApiSpecificErrorHandler.class, ResponseMessageConfig.class})
 public class ExceptionConfig {
 }
