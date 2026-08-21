@@ -2,13 +2,17 @@ package com.bhagwat.scm.core.exception.config;
 
 import com.bhagwat.scm.core.exception.model.ApiSpecificErrorResponse;
 import com.bhagwat.scm.core.exception.model.DisplayResult;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ConfigurationProperties(prefix = "exception")
 public class ExceptionProperties {
-    private Map<Integer, HttpErrorConfig> defaultHttp;
-    private List<ApiSpecificErrorResponse> apiLevelErrors;
+    private Map<Integer, HttpErrorConfig> defaultHttp = new HashMap<>();
+    private List<ApiSpecificErrorResponse> apiLevelErrors = new ArrayList<>();
 
     // Getters and Setters
     public Map<Integer, HttpErrorConfig> getDefaultHttp() { return defaultHttp; }
@@ -18,8 +22,9 @@ public class ExceptionProperties {
     public void setApiLevelErrors(List<ApiSpecificErrorResponse> apiLevelErrors) { this.apiLevelErrors = apiLevelErrors; }
 
     public DisplayResult getDefaultDisplayResult(int httpStatus){
+        if (defaultHttp == null) return null;
         HttpErrorConfig config = defaultHttp.get(httpStatus);
-        return config !=  null ? new DisplayResult(config.getTemplateId(), config.getTitle(), config.getDetails(), config.getParagraph()) : null;
+        return config != null ? new DisplayResult(config.getTemplateId(), config.getTitle(), config.getDetails(), config.getParagraph()) : null;
     }
     /**
      * Inner class for specific HTTP error formatting
